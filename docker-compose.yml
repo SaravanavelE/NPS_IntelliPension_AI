@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  # ─── MongoDB ──────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: nps_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: nps_intellipension
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - nps_network
+
+  # ─── Backend API ──────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nps_backend
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/nps_intellipension
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - nps_network
+
+  # ─── Frontend ─────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nps_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://backend:5000/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - nps_network
+
+volumes:
+  mongo_data:
+
+networks:
+  nps_network:
+    driver: bridge
