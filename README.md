@@ -162,7 +162,7 @@ VITE_API_BASE_URL=http://localhost:5000/api
 
 ## 🌐 Supported Languages
 
-Hindi (हिंदी) · English · Tamil (தமிழ்) · Telugu (తెలుగు) · Bengali (বাংলা) · Marathi (मराठी) · Gujarati (ગુજરાતી) · Kannada (ಕನ್ನಡ)
+Hindi (हिंदी) · English · Tamil (தமிழ்)
 
 ---
 
